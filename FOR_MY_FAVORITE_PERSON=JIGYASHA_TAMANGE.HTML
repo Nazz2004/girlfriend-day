@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Girlfriend Day with Olivia Rodrigo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1000px;
+            height: 85vh;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        header {
+            padding: 20px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 2.8rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        .subtitle {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 300;
+        }
+
+        .game-area {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #gameCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .game-ui {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            font-size: 1.2rem;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        #score {
+            background: rgba(255, 107, 107, 0.7);
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+
+        #progressBar {
+            width: 200px;
+            height: 15px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #progressFill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, #ff6b6b, #ff8e53);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .instructions {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.4);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 80%;
+            z-index: 20;
+        }
+
+        .instructions h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #ffd3d3;
+        }
+
+        .instructions p {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        #startBtn {
+            margin-top: 20px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        #startBtn:hover {
+            background: #ff5252;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .message-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.7);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+            z-index: 30;
+        }
+
+        .message-container.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .message {
+            background: #fff;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 80%;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            transform: scale(0.8);
+            transition: transform 0.8s ease;
+            position: relative;
+        }
+
+        .message-container.active .message {
+            transform: scale(1);
+        }
+
+        .message h2 {
+            color: #ff6b6b;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .message p {
+            color: #555;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .signature {
+            margin-top: 30px;
+            font-weight: bold;
+            color: #ff6b6b;
+            font-size: 1.4rem;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ff6b6b;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            transform: rotate(90deg);
+            background: #ff5252;
+        }
+
+        .music-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #musicToggle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        #musicToggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .song-title {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.9rem;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Hearts Animation */
+        .hearts-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .heart {
+            position: absolute;
+            color: rgba(255, 107, 107, 0.7);
+            font-size: 1.5rem;
+            top: -50px;
+            animation: fall 10s linear infinite;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .instructions h2 {
+                font-size: 1.8rem;
+            }
+
+            .instructions p {
+                font-size: 1rem;
+            }
+
+            .message {
+                padding: 20px;
+            }
+
+            .message h2 {
+                font-size: 2rem;
+            }
+
+            .message p {
+                font-size: 1rem;
+            }
+
+            .song-title {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .game-ui {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hearts-container" id="hearts"></div>
+
+    <div class="container">
+        <header>
+            <h1>Happy Girlfriend Day!</h1>
+            <p class="subtitle">Catch the hearts to reveal your special message</p>
+        </header>
+
+        <div class="game-area">
+            <canvas id="gameCanvas"></canvas>
+
+            <div class="game-ui">
+                <div id="score">Hearts: 0/30</div>
+                <div id="progressBar">
+                    <div id="progressFill"></div>
+                </div>
+            </div>
+            <div class="instructions" id="instructions">
+                <h2>Heart Catcher Game</h2>
+                <p>Use <i class="fas fa-arrow-left"></i> and <i class="fas fa-arrow-right"></i> to move the basket</p>
+                <p>Catch 30 hearts to reveal your special message!</p>
+                <button id="startBtn">Start Game</button>
+            </div>
+
+            <div class="message-container" id="messageContainer">
+                <div class="message">
+                    <div class="close-btn" id="closeBtn">
+                        <i class="fas fa-times"></i>
+                    </div>
+                    <h2>To My Amazing Girlfriend Hitler Jiguu</h2>
+                    <p>Just wanted to say... you're the best thing that's ever happened to me.
+                        Your smile, your kindness, your weird laugh,I adore every little thing about you.
+                        Happy Girlfriend Day, my sunshine. This page may be simple, but my love for you is endless 💖
+                    </p>
+                    <p>On this special day, I want you to know how much you mean to me. You're not just my girlfriend, you're my best friend, my confidant, and my greatest blessing.
+                    Onces again Happy Girlfriend Day 💘
+                    Here’s to all the laughs, the chaos, and the love we’ve yet to share.
+                    You mean the world to me — and then some. </p>
+                    <p class="signature">With all my love,<br>Your Partner-Bibek Shrestha</p>
+                </div>
+            </div>
+
+            <div class="music-controls">
+                <div class="song-title">Olivia Rodrigo - drivers license</div>
+                <button id="musicToggle">
+                    <i class="fas fa-music"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="backgroundMusic" loop>
+        <source src="https://audio.jukehost.co.uk/6sIh2QmHfG0bGqGxWtSx3a7N6dE3t4vx" type="audio/mpeg">
+    </audio>
+    <audio id="catchSound">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="winSound">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Create decorative falling hearts
+        const heartsContainer = document.getElementById('hearts');
+        for (let i = 0; i < 50; i++) {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤';
+            heart.style.left = `${Math.random() * 100}%`;
+            heart.style.animationDuration = `${Math.random() * 5 + 5}s`;
+            heart.style.fontSize = `${Math.random() * 1 + 1}rem`;
+            heartsContainer.appendChild(heart);
+        }
+
+        // Game elements
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const startBtn = document.getElementById('startBtn');
+        const instructions = document.getElementById('instructions');
+        const messageContainer = document.getElementById('messageContainer');
+        const closeBtn = document.getElementById('closeBtn');
+        const musicToggle = document.getElementById('musicToggle');
+        const scoreDisplay = document.getElementById('score');
+        const progressFill = document.getElementById('progressFill');
+
+        // Audio elements
+        const bgMusic = document.getElementById('backgroundMusic');
+        const catchSound = document.getElementById('catchSound');
+        const winSound = document.getElementById('winSound');
+
+        // Game variables
+        let gameRunning = false;
+        let score = 0;
+        const requiredScore = 30;
+        let basket = {
+            x: 0,
+            y: 0,
+            width: 100,
+            height: 30,
+            speed: 8
+        };
+
+        let hearts = [];
+        let lastHeartTime = 0;
+        let heartInterval = 800;
+
+        // Set canvas dimensions
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            basket.y = canvas.height - 50;
+            basket.x = (canvas.width - basket.width) / 2;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        // Draw basket
+        function drawBasket() {
+            ctx.fillStyle = '#ff6b6b';
+            ctx.beginPath();
+            ctx.moveTo(basket.x, basket.y);
+            ctx.lineTo(basket.x + basket.width, basket.y);
+            ctx.lineTo(basket.x + basket.width - 20, basket.y + basket.height);
+            ctx.lineTo(basket.x + 20, basket.y + basket.height);
+            ctx.closePath();
+            ctx.fill();
+
+            // Draw basket handle
+            ctx.strokeStyle = '#ff5252';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.arc(basket.x + basket.width / 2, basket.y - 10, 15, Math.PI, 0, false);
+            ctx.stroke();
+        }
+
+        // Draw hearts
+        function drawHearts() {
+            hearts.forEach((heart, index) => {
+                ctx.fillStyle = heart.color;
+                ctx.beginPath();
+                ctx.arc(heart.x, heart.y, heart.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Draw heart shape inside
+                ctx.fillStyle = '#fff';
+                ctx.font = `${heart.radius * 1.5}px Arial`;
+                ctx.fillText('❤', heart.x - heart.radius / 1.5, heart.y + heart.radius / 2);
+            });
+        }
+
+        // Create a new heart
+        function createHeart() {
+            hearts.push({
+                x: Math.random() * (canvas.width - 40) + 20,
+                y: -20,
+                radius: 15 + Math.random() * 10,
+                speed: 2 + Math.random() * 3,
+                color: `hsl(${Math.random() * 360}, 70%, 60%)`
+            });
+        }
+
+        // Update hearts position
+        function updateHearts() {
+            for (let i = hearts.length - 1; i >= 0; i--) {
+                hearts[i].y += hearts[i].speed;
+
+                // Check if heart is caught
+                if (
+                    hearts[i].y + hearts[i].radius > basket.y &&
+                    hearts[i].x > basket.x &&
+                    hearts[i].x < basket.x + basket.width
+                ) {
+                    hearts.splice(i, 1);
+                    score++;
+                    updateScore();
+                    catchSound.currentTime = 0;
+                    catchSound.play();
+                    continue;
+                }
+
+                // Remove heart if it goes off screen
+                if (hearts[i].y > canvas.height) {
+                    hearts.splice(i, 1);
+                }
+            }
+        }
+
+        // Update score display
+        function updateScore() {
+            scoreDisplay.textContent = `Hearts: ${score}/${requiredScore}`;
+            const progress = (score / requiredScore) * 100;
+            progressFill.style.width = `${progress}%`;
+
+            if (score >= requiredScore) {
+                winGame();
+            }
+        }
+
+        // Move basket
+        function moveBasket(direction) {
+            if (!gameRunning) return;
+
+            if (direction === 'left' && basket.x > 0) {
+                basket.x -= basket.speed;
+            }
+
+            if (direction === 'right' && basket.x < canvas.width - basket.width) {
+                basket.x += basket.speed;
+            }
+        }
+
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                moveBasket('left');
+            } else if (e.key === 'ArrowRight') {
+                moveBasket('right');
+            }
+        });
+
+        // Touch controls for mobile
+        let touchStartX = 0;
+
+        canvas.addEventListener('touchstart', (e) => {
+            if (!gameRunning) return;
+            touchStartX = e.touches[0].clientX;
+            e.preventDefault();
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            if (!gameRunning) return;
+            const touchX = e.touches[0].clientX;
+            const diff = touchX - touchStartX;
+
+            if (diff < -10) {
+                moveBasket('left');
+            } else if (diff > 10) {
+                moveBasket('right');
+            }
+
+            touchStartX = touchX;
+            e.preventDefault();
+        });
+
+        // Start game
+        startBtn.addEventListener('click', () => {
+            gameRunning = true;
+            instructions.style.display = 'none';
+            score = 0;
+            hearts = [];
+            updateScore();
+            bgMusic.play();
+            bgMusic.volume = 0.6;
+        });
+
+        // Win game
+        function winGame() {
+            gameRunning = false;
+            winSound.play();
+            setTimeout(() => {
+                messageContainer.classList.add('active');
+            }, 1500);
+        }
+
+        // Close message
+        closeBtn.addEventListener('click', () => {
+            messageContainer.classList.remove('active');
+        });
+
+        // Music toggle
+        musicToggle.addEventListener('click', () => {
+            if (bgMusic.paused) {
+                bgMusic.play();
+                musicToggle.innerHTML = '<i class="fas fa-music"></i>';
+            } else {
+                bgMusic.pause();
+                musicToggle.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            }
+        });
+
+        // Game loop
+        function gameLoop(timestamp) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (gameRunning) {
+                // Create new hearts
+                if (timestamp - lastHeartTime > heartInterval) {
+                    createHeart();
+                    lastHeartTime = timestamp;
+                    // Make hearts fall faster as game progresses
+                    heartInterval = Math.max(200, 800 - (score * 20));
+                }
+
+                updateHearts();
+            }
+
+            drawHearts();
+            drawBasket();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Initialize
+        resizeCanvas();
+        gameLoop(0);
+    </script>
+</body>
+
+</html>
